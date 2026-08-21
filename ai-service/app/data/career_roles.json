@@ -1,0 +1,164 @@
+{
+  "roles": [
+    {
+      "id": 1,
+      "title": "Software Developer",
+      "category": "Software Engineering",
+      "description": "Designs, codes, tests, and maintains scalable software applications across diverse stacks and domains.",
+      "avg_salary": "$95,000 - $130,000",
+      "growth_rate": "High (25%)",
+      "core_skills": ["Python", "Java", "SQL", "Git", "Problem Solving"],
+      "secondary_skills": ["REST API", "Docker", "Linux", "CI/CD", "Team Collaboration"],
+      "roadmap": [
+        "Master fundamental data structures and algorithms in Python or Java",
+        "Build modular applications using OOP and design patterns",
+        "Learn database management with SQL and ORM frameworks",
+        "Practice collaborative development using Git, GitHub, and unit testing"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Java Developer",
+      "category": "Enterprise Software",
+      "description": "Specializes in enterprise backend architecture, microservices, and distributed systems using Java and Spring Boot.",
+      "avg_salary": "$90,000 - $125,000",
+      "growth_rate": "High (20%)",
+      "core_skills": ["Java", "Spring Boot", "SQL", "PostgreSQL", "REST API"],
+      "secondary_skills": ["Docker", "Git", "Redis", "Kafka", "Microservices", "CI/CD"],
+      "roadmap": [
+        "Deepen knowledge in Java 17/21 core concurrency and JVM internals",
+        "Build production REST APIs with Spring Boot, Spring Security, and Hibernate",
+        "Implement relational caching with Redis and PostgreSQL optimization",
+        "Architect and deploy containerized microservices using Docker"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Backend Developer",
+      "category": "Web & Cloud Services",
+      "description": "Builds server-side logic, high-throughput APIs, database architectures, authentication, and cloud services.",
+      "avg_salary": "$100,000 - $140,000",
+      "growth_rate": "Very High (28%)",
+      "core_skills": ["Node.js", "Express.js", "PostgreSQL", "MongoDB", "REST API"],
+      "secondary_skills": ["Redis", "Docker", "Git", "GraphQL", "Linux", "AWS"],
+      "roadmap": [
+        "Master asynchronous runtime execution and event loops in Node.js",
+        "Design scalable RESTful and GraphQL APIs with robust validation and JWT auth",
+        "Design relational and NoSQL schemas (PostgreSQL, MongoDB) with indexing",
+        "Implement caching layers with Redis and containerize services with Docker"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Frontend Developer",
+      "category": "Client-Side Engineering",
+      "description": "Crafts intuitive, responsive, accessible, and performant user interfaces using modern JavaScript/TypeScript and frameworks.",
+      "avg_salary": "$85,000 - $120,000",
+      "growth_rate": "High (22%)",
+      "core_skills": ["JavaScript", "TypeScript", "React", "HTML5", "CSS3"],
+      "secondary_skills": ["Redux", "Tailwind CSS", "Next.js", "Git", "REST API"],
+      "roadmap": [
+        "Master modern JavaScript (ES6+), TypeScript, and browser DOM rendering",
+        "Build dynamic single-page applications with React (Hooks, Context, State Management)",
+        "Create responsive UI layouts using Tailwind CSS and CSS Grid/Flexbox",
+        "Optimize Core Web Vitals, SSR with Next.js, and client-side API consumption"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Full Stack Developer",
+      "category": "Full Stack Engineering",
+      "description": "Masters both client-side and server-side engineering, bridging UI components with robust data backends and deployment.",
+      "avg_salary": "$105,000 - $145,000",
+      "growth_rate": "Very High (30%)",
+      "core_skills": ["JavaScript", "TypeScript", "React", "Node.js", "Express.js", "PostgreSQL"],
+      "secondary_skills": ["REST API", "Git", "Docker", "MongoDB", "Tailwind CSS", "AWS"],
+      "roadmap": [
+        "Develop full-stack web applications linking React frontends with Express/Node backends",
+        "Implement secure authentication, session management, and role-based access control",
+        "Manage complex relational databases in PostgreSQL with migrations and ORMs",
+        "Containerize full-stack apps with Docker and deploy to cloud environments"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Data Analyst",
+      "category": "Data & Analytics",
+      "description": "Transforms raw business datasets into actionable business intelligence through SQL queries, statistical models, and dashboards.",
+      "avg_salary": "$75,000 - $105,000",
+      "growth_rate": "High (23%)",
+      "core_skills": ["SQL", "Python", "Pandas", "Power BI", "Tableau"],
+      "secondary_skills": ["Data Visualization", "Communication", "NumPy", "Problem Solving"],
+      "roadmap": [
+        "Master complex SQL queries, window functions, CTEs, and aggregation",
+        "Perform exploratory data analysis and data wrangling using Python (Pandas, NumPy)",
+        "Build interactive executive dashboards in Power BI and Tableau",
+        "Communicate analytical findings and business metrics effectively to stakeholders"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Data Scientist",
+      "category": "AI & Advanced Analytics",
+      "description": "Leverages statistical modeling, machine learning, and big data to discover hidden patterns and generate predictive insights.",
+      "avg_salary": "$115,000 - $160,000",
+      "growth_rate": "Very High (35%)",
+      "core_skills": ["Python", "SQL", "Machine Learning", "Pandas", "NumPy", "Scikit-Learn"],
+      "secondary_skills": ["Deep Learning", "Data Visualization", "NLP", "Git", "TensorFlow"],
+      "roadmap": [
+        "Master mathematical foundations (linear algebra, probability, inferential statistics)",
+        "Implement regression, classification, and clustering pipelines with Scikit-Learn",
+        "Engineer features, cross-validate models, and evaluate precision/recall tradeoffs",
+        "Deploy predictive models via REST APIs and communicate experimental results"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Machine Learning Engineer",
+      "category": "Artificial Intelligence",
+      "description": "Designs, trains, deploys, and optimizes state-of-the-art machine learning, deep learning, and NLP models in production.",
+      "avg_salary": "$125,000 - $175,000",
+      "growth_rate": "Exceptional (40%)",
+      "core_skills": ["Python", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "FastAPI"],
+      "secondary_skills": ["Docker", "NLP", "Computer Vision", "Scikit-Learn", "CI/CD", "Linux"],
+      "roadmap": [
+        "Build and fine-tune deep neural networks with PyTorch or TensorFlow",
+        "Master NLP transformers (BERT, GPT, HuggingFace) and text processing",
+        "Package models into scalable low-latency FastAPI inference microservices",
+        "Implement MLOps workflows for model versioning, Dockerization, and GPU acceleration"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "DevOps Engineer",
+      "category": "Cloud Infrastructure",
+      "description": "Automates build, test, and release pipelines, managing container orchestration, cloud infrastructure, and observability.",
+      "avg_salary": "$110,000 - $155,000",
+      "growth_rate": "Very High (32%)",
+      "core_skills": ["Linux", "Docker", "Kubernetes", "CI/CD", "AWS", "Git"],
+      "secondary_skills": ["Terraform", "Python", "Bash", "Problem Solving", "Monitoring"],
+      "roadmap": [
+        "Master Linux administration, networking fundamentals, and shell scripting",
+        "Build robust multi-stage Docker images and configure Kubernetes clusters",
+        "Implement automated CI/CD release pipelines with GitHub Actions or Jenkins",
+        "Provision scalable cloud infrastructure as code using Terraform on AWS/GCP"
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Cloud Engineer",
+      "category": "Cloud Computing",
+      "description": "Architects, secures, and maintains scalable multi-cloud infrastructure and serverless distributed systems.",
+      "avg_salary": "$110,000 - $150,000",
+      "growth_rate": "Very High (29%)",
+      "core_skills": ["AWS", "Azure", "Google Cloud (GCP)", "Docker", "Linux"],
+      "secondary_skills": ["Kubernetes", "Terraform", "CI/CD", "Python", "Problem Solving"],
+      "roadmap": [
+        "Attain cloud architectural proficiency (AWS Solutions Architect / Azure Administrator)",
+        "Configure VPCs, security groups, IAM policies, load balancers, and auto-scaling",
+        "Build serverless event-driven architectures with AWS Lambda / Cloud Functions",
+        "Enforce cloud security, compliance, cost optimization, and disaster recovery"
+      ]
+    }
+  ]
+}
