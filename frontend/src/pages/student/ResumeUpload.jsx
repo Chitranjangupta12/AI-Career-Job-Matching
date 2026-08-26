@@ -35,7 +35,7 @@ const ResumeUpload = () => {
   const handleFileUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      setMsg({ type: 'danger', text: 'Please select a PDF resume file to upload.' });
+      setMsg({ type: 'danger', text: 'Please select a resume file (PDF, DOCX, or TXT) to upload.' });
       return;
     }
 
@@ -52,13 +52,19 @@ const ResumeUpload = () => {
       setParsedResult(data.extracted);
       setMsg({
         type: 'success',
-        text: `Resume parsed successfully! Extracted ${data.extracted.skills?.length || 0} skills and synced to profile.`,
+        text: `Resume parsed successfully! Extracted ${data.extracted?.skills?.length || 0} skills and synced to your profile.`,
       });
       fetchResumes();
     } catch (err) {
+      console.error('Resume upload error:', err);
+      const errorMsg =
+        err.response?.data?.errors ||
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to upload and parse resume. Please ensure the file contains valid text.';
       setMsg({
         type: 'danger',
-        text: err.response?.data?.message || 'Failed to upload and parse resume. Please ensure the PDF is valid.',
+        text: errorMsg,
       });
     } finally {
       setUploading(false);
@@ -67,8 +73,8 @@ const ResumeUpload = () => {
 
   const handleTextParse = async (e) => {
     e.preventDefault();
-    if (!rawText.trim() || rawText.trim().length < 20) {
-      setMsg({ type: 'danger', text: 'Please paste at least 20 characters of resume text.' });
+    if (!rawText.trim() || rawText.trim().length < 10) {
+      setMsg({ type: 'danger', text: 'Please paste at least 10 characters of resume text.' });
       return;
     }
 
@@ -81,12 +87,18 @@ const ResumeUpload = () => {
       setParsedResult(data.extracted);
       setMsg({
         type: 'success',
-        text: `Text analyzed successfully! Extracted ${data.extracted.skills?.length || 0} skills.`,
+        text: `Text analyzed successfully! Extracted ${data.extracted?.skills?.length || 0} skills.`,
       });
     } catch (err) {
+      console.error('Resume text parse error:', err);
+      const errorMsg =
+        err.response?.data?.errors ||
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to parse resume text.';
       setMsg({
         type: 'danger',
-        text: err.response?.data?.message || 'Failed to parse text.',
+        text: errorMsg,
       });
     } finally {
       setUploading(false);
@@ -278,18 +290,66 @@ const ResumeUpload = () => {
               {/* Education & Experience Highlights */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
                 <div>
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Degrees Found</div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Degrees & Education</div>
                   <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0f172a', marginTop: '0.25rem' }}>
-                    {parsedResult.education?.map((e) => e.degree).filter(Boolean).join(', ') || 'Degree inferred from profile'}
+                    {parsedResult.education && parsedResult.education.length > 0 ? (
+                      parsedResult.education.map((e, idx) => (
+                        <div key={idx} style={{ marginBottom: '0.25rem' }}>
+                          {e.degree || 'Degree'} {e.institution ? `• ${e.institution}` : ''} {e.year ? `(${e.year})` : ''}
+                        </div>
+                      ))
+                    ) : (
+                      'Inferred from profile'
+                    )}
                   </div>
                 </div>
                 <div>
                   <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Estimated Experience</div>
                   <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0f172a', marginTop: '0.25rem' }}>
-                    ~{parsedResult.experience_years_estimated} Years
+                    ~{parsedResult.experience_years_estimated || 0} Years
                   </div>
                 </div>
               </div>
+
+              {/* Projects & Certifications (if detected) */}
+              {(parsedResult.projects?.length > 0 || parsedResult.certifications?.length > 0) && (
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                  {parsedResult.projects?.length > 0 && (
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                        Detected Projects ({parsedResult.projects.length})
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                        {parsedResult.projects.map((p, idx) => (
+                          <div key={idx} style={{ fontSize: '0.85rem', color: '#1e293b', background: '#f8fafc', padding: '0.4rem 0.6rem', borderRadius: '4px' }}>
+                            <span style={{ fontWeight: 600 }}>{p.title}</span>
+                            {p.technologies?.length > 0 && (
+                              <span style={{ color: '#64748b', marginLeft: '0.5rem', fontSize: '0.78rem' }}>
+                                [{p.technologies.join(', ')}]
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {parsedResult.certifications?.length > 0 && (
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                        Certifications ({parsedResult.certifications.length})
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                        {parsedResult.certifications.map((c, idx) => (
+                          <span key={idx} style={{ fontSize: '0.8rem', padding: '0.2rem 0.5rem', background: '#fef3c7', color: '#92400e', borderRadius: '4px', fontWeight: 600 }}>
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="card" style={{ textAlign: 'center', padding: '3.5rem 1.5rem', color: '#64748b' }}>

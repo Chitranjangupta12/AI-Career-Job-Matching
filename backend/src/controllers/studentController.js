@@ -51,7 +51,7 @@ exports.getProfile = async (req, res) => {
 
     // Fetch Resumes
     const resumesRes = await db.query(
-      `SELECT id, file_name, file_size, uploaded_at, summary FROM resumes WHERE student_id = $1 ORDER BY uploaded_at DESC`,
+      `SELECT id, file_name, file_size, uploaded_at, parsed_data FROM resumes WHERE student_id = $1 ORDER BY uploaded_at DESC`,
       [studentId]
     );
 

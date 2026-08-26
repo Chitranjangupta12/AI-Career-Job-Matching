@@ -11,22 +11,35 @@ class AIService {
    */
   async parseResumeFile(filePath, originalFilename) {
     try {
+      if (!fs.existsSync(filePath)) {
+        throw new Error(`Resume file not found on server at: ${filePath}`);
+      }
+
       const form = new FormData();
       form.append('file', fs.createReadStream(filePath), {
-        filename: originalFilename,
+        filename: originalFilename || path.basename(filePath),
       });
 
       const response = await axios.post(`${AI_BASE_URL}/api/ai/parse-resume`, form, {
         headers: {
           ...form.getHeaders(),
         },
-        timeout: 20000,
+        timeout: 30000,
+        maxContentLength: 50 * 1024 * 1024,
+        maxBodyLength: 50 * 1024 * 1024,
       });
 
       return response.data;
     } catch (error) {
-      console.error('AI Service Error (parseResumeFile):', error.response?.data || error.message);
-      throw new Error(error.response?.data?.detail || 'Failed to parse resume via AI service.');
+      const errMsg =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        (error.code === 'ECONNREFUSED'
+          ? `Could not connect to Python AI microservice at ${AI_BASE_URL}. Please ensure the AI service is running.`
+          : error.message) ||
+        'Failed to parse resume via AI service.';
+      console.error('AI Service Error (parseResumeFile):', errMsg);
+      throw new Error(errMsg);
     }
   }
 
@@ -36,12 +49,19 @@ class AIService {
   async parseResumeText(text) {
     try {
       const response = await axios.post(`${AI_BASE_URL}/api/ai/parse-resume-text`, { text }, {
-        timeout: 15000,
+        timeout: 20000,
       });
       return response.data;
     } catch (error) {
-      console.error('AI Service Error (parseResumeText):', error.response?.data || error.message);
-      throw new Error(error.response?.data?.detail || 'Failed to parse resume text.');
+      const errMsg =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        (error.code === 'ECONNREFUSED'
+          ? `Could not connect to Python AI microservice at ${AI_BASE_URL}. Please ensure the AI service is running.`
+          : error.message) ||
+        'Failed to parse resume text.';
+      console.error('AI Service Error (parseResumeText):', errMsg);
+      throw new Error(errMsg);
     }
   }
 

@@ -7,16 +7,38 @@ const { successResponse, errorResponse } = require('../utils/responseHelper');
 // Upload and Parse Resume PDF / Document
 exports.uploadAndParseResume = async (req, res) => {
   try {
-    const studentId = req.user.studentProfileId;
+    let studentId = req.user?.studentProfileId;
+
+    // Fallback: If studentProfileId is not populated on req.user, resolve or create profile
+    if (!studentId && req.user?.id) {
+      const pRes = await db.query('SELECT id FROM student_profiles WHERE user_id = $1', [req.user.id]);
+      if (pRes.rows.length > 0) {
+        studentId = pRes.rows[0].id;
+        req.user.studentProfileId = studentId;
+      } else {
+        const newProfile = await db.query(
+          `INSERT INTO student_profiles (user_id, headline) VALUES ($1, 'Student') RETURNING id`,
+          [req.user.id]
+        );
+        studentId = newProfile.rows[0].id;
+        req.user.studentProfileId = studentId;
+      }
+    }
+
+    if (!studentId) {
+      return errorResponse(res, 'Student profile not found. Please log in as a student.', 403);
+    }
 
     if (!req.file) {
-      return errorResponse(res, 'Please upload a PDF or text resume file.', 400);
+      return errorResponse(res, 'Please select and upload a valid PDF, DOCX, or text resume file.', 400);
     }
 
     const filePath = req.file.path;
     const originalName = req.file.originalname;
     const fileSize = req.file.size;
     const mimeType = req.file.mimetype;
+
+    console.log(`[ResumeUpload] Processing upload for student #${studentId}: ${originalName} (${fileSize} bytes)`);
 
     // Call Python FastAPI AI NLP Service
     const aiParseResult = await aiService.parseResumeFile(filePath, originalName);
@@ -39,19 +61,27 @@ exports.uploadAndParseResume = async (req, res) => {
 
     const savedResume = resumeRes.rows[0];
 
-    // Auto-sync extracted skills to student profile if requested or non-empty
-    const autoExtractedSkills = aiParseResult.skills || [];
+    // Auto-sync extracted skills to student profile if non-empty
+    const autoExtractedSkills = Array.isArray(aiParseResult.skills) ? aiParseResult.skills : [];
     let syncedSkillsCount = 0;
 
-    for (const skillName of autoExtractedSkills) {
-      let sRes = await db.query('SELECT id FROM skills WHERE LOWER(name) = LOWER($1)', [skillName.trim()]);
+    for (const rawSkill of autoExtractedSkills) {
+      if (!rawSkill || typeof rawSkill !== 'string') continue;
+      const skillName = rawSkill.trim().slice(0, 100);
+      if (!skillName) continue;
+
+      let sRes = await db.query('SELECT id FROM skills WHERE LOWER(name) = LOWER($1)', [skillName]);
       let skillId;
       if (sRes.rows.length > 0) {
         skillId = sRes.rows[0].id;
       } else {
+        const normalizedSkill = skillName.toLowerCase();
         const newSkill = await db.query(
-          `INSERT INTO skills (name, category, normalized_name) VALUES ($1, 'Technical', LOWER($1)) RETURNING id`,
-          [skillName.trim()]
+          `INSERT INTO skills (name, category, normalized_name)
+           VALUES ($1, 'Technical', $2)
+           ON CONFLICT (name) DO UPDATE SET normalized_name = EXCLUDED.normalized_name
+           RETURNING id`,
+          [skillName, normalizedSkill]
         );
         skillId = newSkill.rows[0].id;
       }
@@ -66,12 +96,13 @@ exports.uploadAndParseResume = async (req, res) => {
     }
 
     // Update experience years if estimated and currently 0
-    if (aiParseResult.experience_years_estimated > 0) {
+    const estExp = Number(aiParseResult.experience_years_estimated);
+    if (estExp > 0) {
       await db.query(
         `UPDATE student_profiles
-         SET experience_years = CASE WHEN experience_years = 0 THEN $1 ELSE experience_years END
+         SET experience_years = CASE WHEN COALESCE(experience_years, 0) = 0 THEN $1 ELSE experience_years END
          WHERE id = $2`,
-        [aiParseResult.experience_years_estimated, studentId]
+        [estExp, studentId]
       );
     }
 
@@ -86,8 +117,9 @@ exports.uploadAndParseResume = async (req, res) => {
       201
     );
   } catch (error) {
-    console.error('uploadAndParseResume Error:', error);
-    return errorResponse(res, 'Failed to process resume.', 500, error.message);
+    console.error('[ResumeUpload] uploadAndParseResume Error:', error.message || error);
+    const errorMessage = error.message || 'Failed to process resume.';
+    return errorResponse(res, errorMessage, 500, errorMessage);
   }
 };
 
@@ -110,7 +142,19 @@ exports.parseRawText = async (req, res) => {
 // Get student resumes
 exports.getStudentResumes = async (req, res) => {
   try {
-    const studentId = req.user.studentProfileId;
+    let studentId = req.user?.studentProfileId;
+    if (!studentId && req.user?.id) {
+      const pRes = await db.query('SELECT id FROM student_profiles WHERE user_id = $1', [req.user.id]);
+      if (pRes.rows.length > 0) {
+        studentId = pRes.rows[0].id;
+        req.user.studentProfileId = studentId;
+      }
+    }
+
+    if (!studentId) {
+      return successResponse(res, { resumes: [] });
+    }
+
     const resumesRes = await db.query(
       `SELECT id, file_name, file_size, uploaded_at, parsed_data FROM resumes WHERE student_id = $1 ORDER BY uploaded_at DESC`,
       [studentId]
