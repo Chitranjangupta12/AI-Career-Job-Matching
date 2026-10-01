@@ -6,6 +6,7 @@ const { authenticateToken, isAdmin } = require('../middleware/authMiddleware');
 router.use(authenticateToken, isAdmin);
 
 router.get('/stats', adminController.getDashboardStats);
+router.get('/users', adminController.getAllUsers);
 router.get('/students', adminController.getAllStudents);
 router.get('/recruiters', adminController.getAllRecruiters);
 router.get('/jobs', adminController.getAllJobs);

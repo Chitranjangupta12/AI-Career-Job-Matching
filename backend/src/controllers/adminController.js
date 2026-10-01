@@ -6,6 +6,7 @@ exports.getDashboardStats = async (req, res) => {
   try {
     const statsRes = await db.query(`
       SELECT
+        (SELECT COUNT(*) FROM users) as total_users,
         (SELECT COUNT(*) FROM users WHERE role = 'student') as total_students,
         (SELECT COUNT(*) FROM users WHERE role = 'recruiter') as total_recruiters,
         (SELECT COUNT(*) FROM jobs) as total_jobs,
@@ -26,14 +27,46 @@ exports.getDashboardStats = async (req, res) => {
        LIMIT 6`
     );
 
+    const recentAppsRes = await db.query(
+      `SELECT a.id, a.match_score, a.status, a.applied_at,
+              j.title as job_title, j.company_name,
+              u.name as candidate_name, u.email as candidate_email
+       FROM applications a
+       JOIN jobs j ON a.job_id = j.id
+       JOIN student_profiles sp ON a.student_id = sp.id
+       JOIN users u ON sp.user_id = u.id
+       ORDER BY a.applied_at DESC
+       LIMIT 6`
+    );
+
     return successResponse(res, {
       stats: statsRes.rows[0],
       recentUsers: recentUsersRes.rows,
       recentJobs: recentJobsRes.rows,
+      recentApplications: recentAppsRes.rows,
     });
   } catch (error) {
     console.error('Admin getDashboardStats Error:', error);
     return errorResponse(res, 'Failed to fetch admin stats.', 500, error.message);
+  }
+};
+
+// Manage All Users (GET /api/admin/users)
+exports.getAllUsers = async (req, res) => {
+  try {
+    const usersRes = await db.query(`
+      SELECT u.id, u.name, u.email, u.role, u.is_active, u.created_at,
+             sp.headline, rp.company_name
+      FROM users u
+      LEFT JOIN student_profiles sp ON u.id = sp.user_id
+      LEFT JOIN recruiter_profiles rp ON u.id = rp.user_id
+      ORDER BY u.created_at DESC
+    `);
+
+    return successResponse(res, { users: usersRes.rows });
+  } catch (error) {
+    console.error('Admin getAllUsers Error:', error);
+    return errorResponse(res, 'Failed to fetch users.', 500, error.message);
   }
 };
 

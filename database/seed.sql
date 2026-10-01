@@ -192,7 +192,7 @@ ON CONFLICT (user_id) DO NOTHING;
 
 -- 6. Seed Student Profile
 INSERT INTO student_profiles (user_id, headline, phone, location, bio, education_level, major, experience_years, interests, github_url, linkedin_url)
-SELECT id, 'Aspiring Full Stack Engineer & Machine Learning Enthusiast', '+1 (555) 234-5678', 'Austin, TX', 'Final year B.Tech Computer Science student passionate about building scalable web apps and AI-driven platforms.', 'Bachelor of Technology', 'Computer Science and Engineering', 1.0, 'Full Stack Development, AI/ML, Cloud Systems', 'https://github.com/alexjohnson', 'https://linkedin.com/in/alexjohnson'
+SELECT id, 'Aspiring Full Stack Engineer & Machine Learning Enthusiast', '+1 (555) 234-5678', 'Austin, TX', 'Computer Science graduate passionate about building scalable web apps and AI-driven platforms.', 'Bachelor of Technology', 'Computer Science and Engineering', 1.0, 'Full Stack Development, AI/ML, Cloud Systems', 'https://github.com/alexjohnson', 'https://linkedin.com/in/alexjohnson'
 FROM users WHERE email = 'alex.student@university.edu'
 ON CONFLICT (user_id) DO NOTHING;
 

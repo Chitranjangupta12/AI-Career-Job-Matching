@@ -1,7 +1,5 @@
 # AI-Powered Personalized Career Guidance and Intelligent Job Matching System
 
-**Major Project: Bachelor of Technology in Computer Science & Engineering**
-
 ---
 
 ## 🌟 Project Overview
@@ -209,15 +207,15 @@ npm run dev
 
 ---
 
-## 🔑 Default Test Accounts
+## 🔑 Default Accounts
 
-| Role | Email | Password |
+| Role | Email | Access Route |
 | :--- | :--- | :--- |
-| **Student** | `alex.student@university.edu` | `Password123!` |
-| **Recruiter** | `recruiter@techcorp.com` | `Password123!` |
-| **Admin** | `admin@careerguidance.com` | `Password123!` |
+| **Student** | `alex.student@university.edu` | `/login` |
+| **Recruiter** | `recruiter@techcorp.com` | `/login` |
+| **Admin** | Configured via `ADMIN_EMAIL` in `.env` | Direct hidden route `/admin/login` |
 
-*(You can also register new Student and Recruiter accounts directly on the `/register` page or use the 1-click demo switcher on `/login`.)*
+*(Students and Recruiters can also register directly on `/register`. Admin authentication is dedicated and protected via `/admin/login`.)*
 
 ---
 

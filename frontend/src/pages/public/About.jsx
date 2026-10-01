@@ -11,18 +11,18 @@ const About = () => {
             About CareerAI System
           </h1>
           <p style={{ color: '#64748b', fontSize: '1.05rem', marginTop: '0.5rem' }}>
-            Major Project: AI-Powered Personalized Career Guidance & Intelligent Job Matching System
+            AI-Powered Personalized Career Guidance & Intelligent Job Matching System
           </p>
         </div>
 
         {/* System Overview Card */}
         <div className="card" style={{ marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>
-            Project Overview & Objectives
+            Platform Overview & Objectives
           </h2>
           <p style={{ color: '#475569', lineHeight: 1.7, marginBottom: '1rem' }}>
-            Traditional job portals rely on rudimentary keyword searches that lead to high mismatch rates and career disorientation for university graduates.
-            This project provides an end-to-end intelligent platform that bridges student skill profiles with market demand through natural language processing, taxonomy normalization, and explainable multi-factor scoring.
+            Traditional job portals rely on rudimentary keyword searches that lead to high mismatch rates and career disorientation for job seekers.
+            CareerAI provides an end-to-end intelligent platform that bridges student skill profiles with market demand through natural language processing, taxonomy normalization, and explainable multi-factor scoring.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1.5rem' }}>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>

@@ -12,4 +12,6 @@ module.exports = {
   DB_USER: process.env.DB_USER || 'postgres',
   DB_PASSWORD: process.env.DB_PASSWORD || '',
   DB_NAME: process.env.DB_NAME || 'career_guidance',
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'adminchitranjangupta7662@gmail.com',
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'Chitranjan gupta1@',
 };

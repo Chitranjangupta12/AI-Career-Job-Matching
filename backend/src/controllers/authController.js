@@ -26,9 +26,9 @@ exports.register = async (req, res) => {
       return errorResponse(res, 'Name, email, password, and role are required.', 400);
     }
 
-    const validRoles = ['student', 'recruiter', 'admin'];
+    const validRoles = ['student', 'recruiter'];
     if (!validRoles.includes(role.toLowerCase())) {
-      return errorResponse(res, 'Invalid role. Must be student, recruiter, or admin.', 400);
+      return errorResponse(res, 'Invalid role. Must be student or recruiter.', 400);
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -200,3 +200,72 @@ exports.getMe = async (req, res) => {
     return errorResponse(res, 'Failed to fetch user profile.', 500, error.message);
   }
 };
+
+// Admin Login (Secure Backend-Only Comparison)
+exports.adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return errorResponse(res, 'Invalid email or password.', 401);
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const configAdminEmail = (env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const configAdminPassword = env.ADMIN_PASSWORD || '';
+
+    // Verify credentials strictly against backend environment configuration
+    const isEmailMatch = normalizedEmail === configAdminEmail;
+    const isPasswordMatch = password === configAdminPassword;
+
+    if (!isEmailMatch || !isPasswordMatch) {
+      return errorResponse(res, 'Invalid email or password.', 401);
+    }
+
+    // Ensure administrator user record exists in the database for consistency
+    const adminUserRes = await db.query(
+      `SELECT id, name, email, role, is_active FROM users WHERE LOWER(email) = $1`,
+      [configAdminEmail]
+    );
+
+    let adminUser;
+    if (adminUserRes.rows.length === 0) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(configAdminPassword, salt);
+      const insertRes = await db.query(
+        `INSERT INTO users (name, email, password_hash, role)
+         VALUES ($1, $2, $3, 'admin')
+         RETURNING id, name, email, role, is_active`,
+        ['System Administrator', configAdminEmail, passwordHash]
+      );
+      adminUser = insertRes.rows[0];
+    } else {
+      adminUser = adminUserRes.rows[0];
+      if (adminUser.role !== 'admin' || !adminUser.is_active) {
+        await db.query(`UPDATE users SET role = 'admin', is_active = TRUE WHERE id = $1`, [adminUser.id]);
+        adminUser.role = 'admin';
+        adminUser.is_active = true;
+      }
+    }
+
+    const token = generateToken(adminUser);
+
+    return successResponse(
+      res,
+      {
+        user: {
+          id: adminUser.id,
+          name: adminUser.name || 'System Administrator',
+          email: adminUser.email,
+          role: 'admin',
+        },
+        token,
+      },
+      'Admin authentication successful!'
+    );
+  } catch (error) {
+    console.error('Admin Login Error:', error.message);
+    return errorResponse(res, 'Internal server error during authentication.', 500);
+  }
+};
+

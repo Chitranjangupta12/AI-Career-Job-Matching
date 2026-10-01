@@ -10,7 +10,7 @@ const Footer = () => {
           <span>AI-Powered Career Guidance & Intelligent Job Matching System</span>
         </div>
         <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-          Final Year B.Tech Computer Science Major Project
+          Intelligent Career Guidance & Talent Matching Platform
         </div>
       </div>
     </footer>

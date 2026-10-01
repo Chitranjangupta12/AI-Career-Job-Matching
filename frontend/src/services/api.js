@@ -37,6 +37,7 @@ api.interceptors.response.use(
 export const authAPI = {
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
+  adminLogin: (data) => api.post('/auth/admin/login', data),
   getMe: () => api.get('/auth/me'),
 };
 
@@ -94,6 +95,7 @@ export const recruiterAPI = {
 
 export const adminAPI = {
   getStats: () => api.get('/admin/stats'),
+  getUsers: () => api.get('/admin/users'),
   getStudents: () => api.get('/admin/students'),
   getRecruiters: () => api.get('/admin/recruiters'),
   getJobs: () => api.get('/admin/jobs'),

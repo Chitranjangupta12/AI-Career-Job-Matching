@@ -33,8 +33,8 @@ import ManageJobs from './pages/recruiter/ManageJobs';
 import Applicants from './pages/recruiter/Applicants';
 import CandidateDetails from './pages/recruiter/CandidateDetails';
 
-// Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminLogin from './pages/admin/AdminLogin';
 import ManageStudents from './pages/admin/ManageStudents';
 import ManageRecruiters from './pages/admin/ManageRecruiters';
 import AdminManageJobs from './pages/admin/ManageJobs';
@@ -57,6 +57,7 @@ const AppLayout = () => {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/jobs" element={<JobSearch />} />
             <Route path="/jobs/:id" element={<JobDetails />} />
 
@@ -83,7 +84,7 @@ const AppLayout = () => {
             </Route>
 
             {/* Admin Protected Routes */}
-            <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['admin']} redirectPath="/admin/login" />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/students" element={<ManageStudents />} />
               <Route path="/admin/recruiters" element={<ManageRecruiters />} />

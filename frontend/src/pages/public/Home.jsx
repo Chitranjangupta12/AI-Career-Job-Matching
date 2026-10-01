@@ -53,7 +53,7 @@ const Home = () => {
             Everything You Need for Career Success
           </h2>
           <p style={{ color: '#64748b', marginTop: '0.5rem' }}>
-            An integrated platform connecting Students, Recruiters, and Administrators.
+            An integrated platform connecting Students and Recruiters.
           </p>
         </div>
 

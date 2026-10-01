@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authAPI } from '../../services/api';
-import { Compass, LogIn, AlertCircle } from 'lucide-react';
+import { Shield, Lock, Mail, AlertCircle, LogIn } from 'lucide-react';
 
-const Login = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated && isAdmin) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, isAdmin, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,15 +25,13 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await authAPI.login({ email, password });
+      const res = await authAPI.adminLogin({ email, password });
       const { user, token } = res.data.data;
       login(user, token);
-
-      if (user.role === 'student') navigate('/student/dashboard');
-      else if (user.role === 'recruiter') navigate('/recruiter/dashboard');
-      else navigate('/');
+      navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      // Standard generic error message - never reveals which field was incorrect
+      setError(err.response?.data?.message || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }
@@ -35,16 +39,16 @@ const Login = () => {
 
   return (
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
-      <div className="card" style={{ maxWidth: '460px', width: '100%', padding: '2.5rem' }}>
+      <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '2.5rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ display: 'inline-flex', padding: '0.75rem', background: '#eef2ff', borderRadius: '12px', color: '#4f46e5', marginBottom: '0.75rem' }}>
-            <Compass size={28} />
+          <div style={{ display: 'inline-flex', padding: '0.85rem', background: '#eef2ff', borderRadius: '14px', color: '#4f46e5', marginBottom: '0.85rem' }}>
+            <Shield size={32} />
           </div>
           <h2 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0f172a' }}>
-            Sign In to CareerAI
+            Administrator Access
           </h2>
           <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.35rem' }}>
-            Access personalized career guidance and job matching
+            Sign in with authorized administrator credentials
           </p>
         </div>
 
@@ -57,44 +61,50 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Mail size={14} color="#64748b" />
+              <span>Admin Email</span>
+            </label>
             <input
               type="email"
               className="form-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@university.edu"
+              placeholder="admin@example.com"
+              autoComplete="username"
               required
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Lock size={14} color="#64748b" />
+              <span>Password</span>
+            </label>
             <input
               type="password"
               className="form-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
               required
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }} disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }}
+            disabled={loading}
+          >
             <LogIn size={18} />
-            <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
+            <span>{loading ? 'Verifying Credentials...' : 'Sign In as Administrator'}</span>
           </button>
         </form>
-
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
-          Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#4f46e5', fontWeight: 600 }}>
-            Create Account
-          </Link>
-        </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;
