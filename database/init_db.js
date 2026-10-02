@@ -35,6 +35,7 @@ async function initializeDatabase() {
     user: dbUser,
     password: dbPassword,
     database: 'postgres',
+    ssl: { rejectUnauthorized: false }
   });
 
   try {
@@ -69,7 +70,8 @@ async function initializeDatabase() {
     user: dbUser,
     password: dbPassword,
     database: dbName,
-  });
+    ssl: { rejectUnauthorized: false }
+});
 
   try {
     await appClient.connect();

@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle, AlertTriangle, Info, Award, Brain } from 'lucide-react';
 import SkillBadge from './SkillBadge';
 
@@ -17,7 +18,7 @@ const ScoreBreakdownModal = ({ isOpen, onClose, jobTitle, matchScore, breakdown,
   const projScore = breakdown?.project_score ?? 0;
   const totalScore = matchScore ?? (skillScore + expScore + eduScore + projScore);
 
-  return (
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
@@ -147,6 +148,8 @@ const ScoreBreakdownModal = ({ isOpen, onClose, jobTitle, matchScore, breakdown,
         </div>
       </div>
     </div>
+    ,
+    document.body
   );
 };
 
